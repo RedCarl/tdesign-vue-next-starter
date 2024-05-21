@@ -11,6 +11,7 @@ import debounce from 'lodash/debounce';
 import isFunction from 'lodash/isFunction';
 import throttle from 'lodash/throttle';
 import { stringify } from 'qs';
+import qs from 'query-string';
 
 import { ContentTypeEnum } from '@/constants';
 import { AxiosRequestConfigRetry, RequestOptions, Result } from '@/types/axios';
@@ -171,7 +172,21 @@ export class VAxios {
   }
 
   get<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
-    return this.request({ ...config, method: 'GET' }, options);
+    return this.request(
+      {
+        ...config,
+        paramsSerializer: (obj) => {
+          return qs.stringify(obj, {
+            // 如果为Null或undefined、不参与拼接
+            skipNull: true,
+            // 如果为空字符串、不参与拼接
+            skipEmptyString: true,
+          });
+        },
+        method: 'GET',
+      },
+      options,
+    );
   }
 
   post<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
