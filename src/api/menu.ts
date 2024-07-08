@@ -1,8 +1,9 @@
 import { request } from '@/utils/request';
 
-export function menuQuery(id: string) {
+export function menuQuery(params: any) {
   return request.get({
-    url: `/menu/query?id=${id}`,
+    url: '/menu/query',
+    params,
   });
 }
 

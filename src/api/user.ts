@@ -24,27 +24,28 @@ export function userMenu() {
   });
 }
 
-export function sysUserQueryById(id: number) {
+export function userQuery(params: any) {
   return request.get({
-    url: `/user/queryById?id=${id}`,
-  });
-}
-
-export function sysUserQueryByPage(params: any) {
-  return request.get({
-    url: '/user/queryByPage',
+    url: '/user/query',
     params,
   });
 }
 
-export function sysUserReplace(params: any) {
+export function userPage(params: any) {
+  return request.get({
+    url: '/user/page',
+    params,
+  });
+}
+
+export function userReplace(params: any) {
   return request.post({
     url: '/user/replace',
     params,
   });
 }
 
-export function sysUserDelete(ids: string) {
+export function userDelete(ids: string) {
   return request.delete({
     url: `/user/delete?ids=${ids}`,
   });
