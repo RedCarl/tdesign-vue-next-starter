@@ -8,8 +8,8 @@
     @submit="onSubmit"
   >
     <template v-if="type == 'password'">
-      <t-form-item name="account">
-        <t-input v-model="formData.account" size="large" :placeholder="`${$t('pages.login.input.account')}：admin`">
+      <t-form-item name="username">
+        <t-input v-model="formData.username" size="large" :placeholder="`${$t('pages.login.input.username')}：admin`">
           <template #prefix-icon>
             <t-icon name="user" />
           </template>
@@ -72,7 +72,7 @@
 
     <div class="switch-container">
       <span v-if="type !== 'password'" class="tip" @click="switchType('password')">{{
-        $t('pages.login.accountLogin')
+        $t('pages.login.usernameLogin')
       }}</span>
       <span v-if="type !== 'qrcode'" class="tip" @click="switchType('qrcode')">{{
         $t('pages.login.wechatLogin')
@@ -100,7 +100,7 @@ const INITIAL_DATA = {
 };
 
 const FORM_RULES: Record<string, FormRule[]> = {
-  username: [{ required: true, message: t('pages.login.required.account'), type: 'error' }],
+  username: [{ required: true, message: t('pages.login.required.username'), type: 'error' }],
   password: [{ required: true, message: t('pages.login.required.password'), type: 'error' }],
 };
 
