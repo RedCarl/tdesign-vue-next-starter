@@ -12,6 +12,7 @@ export interface RouteMeta {
   keepAlive?: boolean;
   frameSrc?: string;
   frameBlank?: boolean;
+  group?: boolean;
 }
 
 export interface MenuRoute {
@@ -19,10 +20,10 @@ export interface MenuRoute {
   title?: string | Record<string, string>;
   name?: string;
   icon?:
-    | string
-    | {
-        render: () => void;
-      };
+      | string
+      | {
+    render: () => void;
+  };
   redirect?: string;
   children: MenuRoute[];
   meta: RouteMeta;

@@ -1,26 +1,34 @@
 <template>
   <div>
     <template v-for="item in list" :key="item.path">
-      <template v-if="!item.children || !item.children.length || item.meta?.single">
-        <t-menu-item v-if="getHref(item)" :name="item.path" :value="getPath(item)" @click="openHref(getHref(item)[0])">
-          <template #icon>
-            <component :is="menuIcon(item)" class="t-icon"></component>
-          </template>
-          {{ renderMenuTitle(item.title) }}
-        </t-menu-item>
-        <t-menu-item v-else :name="item.path" :value="getPath(item)" :to="item.path">
-          <template #icon>
-            <component :is="menuIcon(item)" class="t-icon"></component>
-          </template>
-          {{ renderMenuTitle(item.title) }}
-        </t-menu-item>
-      </template>
-      <t-submenu v-else :name="item.path" :value="item.path" :title="renderMenuTitle(item.title)">
-        <template #icon>
-          <component :is="menuIcon(item)" class="t-icon"></component>
+      <t-menu-group v-if="item.meta.group" :title="renderMenuTitle(item.title)" />
+      <div v-if="!item.meta.group">
+        <template v-if="!item.children || !item.children.length || item.meta?.single">
+          <t-menu-item
+              v-if="getHref(item)"
+              :name="item.path"
+              :value="getPath(item)"
+              @click="openHref(getHref(item)[0])"
+          >
+            <template #icon>
+              <component :is="menuIcon(item)" class="t-icon"></component>
+            </template>
+            {{ renderMenuTitle(item.title) }}
+          </t-menu-item>
+          <t-menu-item v-else :name="item.path" :value="getPath(item)" :to="item.path">
+            <template #icon>
+              <component :is="menuIcon(item)" class="t-icon"></component>
+            </template>
+            {{ renderMenuTitle(item.title) }}
+          </t-menu-item>
         </template>
-        <menu-content v-if="item.children" :nav-data="item.children" />
-      </t-submenu>
+        <t-submenu v-else :value="item.path" :title="renderMenuTitle(item.title)">
+          <template #icon>
+            <component :is="menuIcon(item)" class="t-icon"></component>
+          </template>
+          <menu-content v-if="item.children" :nav-data="item.children" />
+        </t-submenu>
+      </div>
     </template>
   </div>
 </template>
@@ -51,8 +59,7 @@ const list = computed(() => {
 
 const menuIcon = (item: ListItemType) => {
   if (typeof item.icon === 'string') return <t-icon name={item.icon} />;
-  const RenderIcon = item.icon;
-  return RenderIcon;
+  return item.icon;
 };
 
 const renderMenuTitle = (title: string | Record<string, string>) => {
@@ -69,19 +76,19 @@ const getMenuList = (list: MenuRoute[], basePath?: string): ListItemType[] => {
     return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
   });
   return list
-    .map((item) => {
-      const path = basePath && !item.path.includes(basePath) ? `${basePath}/${item.path}` : item.path;
+      .map((item) => {
+        const path = basePath && !item.path.includes(basePath) ? `${basePath}/${item.path}` : item.path;
 
-      return {
-        path,
-        title: item.meta?.title,
-        icon: item.meta?.icon,
-        children: getMenuList(item.children, path),
-        meta: item.meta,
-        redirect: item.redirect,
-      };
-    })
-    .filter((item) => item.meta && item.meta.hidden !== true);
+        return {
+          path,
+          title: item.meta?.title,
+          icon: item.meta?.icon,
+          children: getMenuList(item.children, path),
+          meta: item.meta,
+          redirect: item.redirect,
+        };
+      })
+      .filter((item) => item.meta && item.meta.hidden !== true);
 };
 
 const getHref = (item: MenuRoute) => {
