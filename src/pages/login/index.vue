@@ -22,11 +22,6 @@
     <footer class="copyright">Copyright @ 2021-2023 Tencent. All Rights Reserved</footer>
   </div>
 </template>
-<script lang="ts">
-export default {
-  name: 'LoginIndex',
-};
-</script>
 <script setup lang="ts">
 import { ref } from 'vue';
 

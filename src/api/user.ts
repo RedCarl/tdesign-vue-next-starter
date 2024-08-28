@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
 
-export function userLogin(data: any) {
-  return request.post({
+export function userLogin(params: any) {
+  return request.get({
     url: '/user/login',
-    data,
+    params,
   });
 }
 export function userLogout() {
