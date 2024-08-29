@@ -6,7 +6,7 @@
       </keep-alive>
     </transition>
   </router-view>
-  <frame-page />
+<!--  <frame-page />-->
 </template>
 
 <script setup lang="ts">
@@ -15,7 +15,7 @@ import isUndefined from 'lodash/isUndefined';
 import type { ComputedRef } from 'vue';
 import { computed } from 'vue';
 
-import FramePage from '@/layouts/frame/index.vue';
+// import FramePage from '@/layouts/frame/index.vue';
 import { useTabsRouterStore } from '@/store';
 
 // <suspense>标签属于实验性功能，请谨慎使用
