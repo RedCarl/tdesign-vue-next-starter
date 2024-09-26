@@ -26,25 +26,26 @@
 <script setup lang="ts">
 import { difference, remove, union } from 'lodash';
 import { MenuValue } from 'tdesign-vue-next';
-import type { PropType } from 'vue';
+import {onBeforeMount, PropType} from 'vue';
 import { computed, onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import {onBeforeRouteUpdate, useRouter} from 'vue-router';
 
 import AssetLogoFull from '@/assets/assets-logo-full.svg?component';
 import AssetLogo from '@/assets/assets-t-logo.svg?component';
 import { prefix } from '@/config/global';
 import { getActive } from '@/router';
 import { useSettingStore } from '@/store';
-import type { MenuRoute, ModeType } from '@/types/interface';
+import type { ModeType } from '@/types/interface';
 
 import pgk from '../../../package.json';
 import MenuContent from './MenuContent.vue';
+import {RouteItem} from "@/api/model/permissionModel";
 
 const MIN_POINT = 992 - 1;
 
 const props = defineProps({
   menu: {
-    type: Array as PropType<MenuRoute[]>,
+    type: Array as PropType<RouteItem[]>,
     default: () => [],
   },
   showLogo: {
@@ -76,7 +77,7 @@ const props = defineProps({
 const collapsed = computed(() => useSettingStore().isSidebarCompact);
 const menuAutoCollapsed = computed(() => useSettingStore().menuAutoCollapsed);
 
-const active = computed(() => getActive());
+const active = ref();
 
 const expanded = ref<MenuValue[]>([]);
 
@@ -158,13 +159,21 @@ onMounted(() => {
 });
 
 const goHome = () => {
-  router.push('/dashboard/base');
+  router.push('/dashboard');
 };
 
 const getLogo = () => {
   if (collapsed.value) return AssetLogo;
   return AssetLogoFull;
 };
+
+onBeforeRouteUpdate(async (to, from) => {
+  active.value = to.path;
+})
+
+onBeforeMount(()=>{
+  active.value = getActive();
+})
 </script>
 
 <style lang="less" scoped></style>

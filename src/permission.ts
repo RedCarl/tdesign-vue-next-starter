@@ -49,7 +49,7 @@ router.beforeEach(async (to, from, next) => {
         next(`/`);
       }
     } catch (error) {
-      MessagePlugin.error(error.message);
+      await MessagePlugin.error(error.message);
       next({
         path: '/login',
         query: { redirect: encodeURIComponent(to.fullPath) },

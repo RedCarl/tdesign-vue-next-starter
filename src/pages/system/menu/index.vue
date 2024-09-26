@@ -122,15 +122,15 @@ const dataLoading = ref(false);
 const fetchData = async (params: any) => {
   dataLoading.value = true;
   try {
-    const data = await menuPage(params);
-
-    renderData.value = data.records;
-    pagination.value = {
-      ...pagination.value,
-      total: data.totalRow,
-      current: data.pageNumber,
-      pageSize: data.pageSize,
-    };
+    // const data = await menuPage(params);
+    //
+    // renderData.value = data.records;
+    // pagination.value = {
+    //   ...pagination.value,
+    //   total: data.totalRow,
+    //   current: data.pageNumber,
+    //   pageSize: data.pageSize,
+    // };
   } catch (e) {
     await MessagePlugin.error(e.message);
   } finally {

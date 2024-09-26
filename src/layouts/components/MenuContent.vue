@@ -1,70 +1,46 @@
 <template>
-  <div>
-    <template v-for="item in list" :key="item.path">
-      <t-menu-group v-if="item.meta.group" :title="renderMenuTitle(item.title)" />
-      <div v-if="!item.meta.group">
-        <template v-if="!item.children || !item.children.length || item.meta?.single">
-          <t-menu-item
-              v-if="getHref(item)"
-              :name="item.path"
-              :value="getPath(item)"
-              @click="openHref(getHref(item)[0])"
-          >
-            <template #icon>
-              <component :is="menuIcon(item)" class="t-icon"></component>
-            </template>
-            {{ renderMenuTitle(item.title) }}
-          </t-menu-item>
-          <t-menu-item v-else :name="item.path" :value="getPath(item)" :to="item.path">
-            <template #icon>
-              <component :is="menuIcon(item)" class="t-icon"></component>
-            </template>
-            {{ renderMenuTitle(item.title) }}
-          </t-menu-item>
+  <t-menu-group v-for="menu in list" :title="menu.title" >
+    <template v-for="item in menu.menu">
+      <t-menu-item
+          :name="item.path"
+          :value="getPath(item)"
+          :to="item.path"
+      >
+        <template #icon>
+          <component :is="menuIcon(item)" class="t-icon"></component>
         </template>
-        <t-submenu v-else :value="item.path" :title="renderMenuTitle(item.title)">
-          <template #icon>
-            <component :is="menuIcon(item)" class="t-icon"></component>
-          </template>
-          <menu-content v-if="item.children" :nav-data="item.children" />
-        </t-submenu>
-      </div>
+        {{ item.name }}
+      </t-menu-item>
     </template>
-  </div>
+  </t-menu-group>
 </template>
 <script setup lang="tsx">
 import type { PropType } from 'vue';
 import { computed } from 'vue';
 
-import { useLocale } from '@/locales/useLocale';
 import { getActive } from '@/router';
 import type { MenuRoute } from '@/types/interface';
+import {MenuItem, RouteItem} from "@/api/model/permissionModel";
 
 type ListItemType = MenuRoute & { icon?: string };
 
 const props = defineProps({
   navData: {
-    type: Array as PropType<MenuRoute[]>,
+    type: Array as PropType<RouteItem[]>,
     default: () => [],
   },
 });
 
 const active = computed(() => getActive());
 
-const { locale } = useLocale();
 const list = computed(() => {
   const { navData } = props;
-  return getMenuList(navData);
+  return navData;
 });
 
-const menuIcon = (item: ListItemType) => {
+const menuIcon = (item: MenuItem) => {
   if (typeof item.icon === 'string') return <t-icon name={item.icon} />;
   return item.icon;
-};
-
-const renderMenuTitle = (title: string | Record<string, string>) => {
-  if (typeof title === 'string') return title;
-  return title[locale.value];
 };
 
 const getMenuList = (list: MenuRoute[], basePath?: string): ListItemType[] => {
@@ -91,15 +67,7 @@ const getMenuList = (list: MenuRoute[], basePath?: string): ListItemType[] => {
       .filter((item) => item.meta && item.meta.hidden !== true);
 };
 
-const getHref = (item: MenuRoute) => {
-  const { frameSrc, frameBlank } = item.meta;
-  if (frameSrc && frameBlank) {
-    return frameSrc.match(/(http|https):\/\/([\w.]+\/?)\S*/);
-  }
-  return null;
-};
-
-const getPath = (item: ListItemType) => {
+const getPath = (item: MenuItem) => {
   const activeLevel = active.value.split('/').length;
   const pathLevel = item.path.split('/').length;
   if (activeLevel > pathLevel && active.value.startsWith(item.path)) {
@@ -109,11 +77,15 @@ const getPath = (item: ListItemType) => {
   if (active.value === item.path) {
     return active.value;
   }
-
-  return item.meta?.single ? item.redirect : item.path;
-};
-
-const openHref = (url: string) => {
-  window.open(url);
 };
 </script>
+
+<style scoped lang="less">
+:deep(.t-menu-group__title) {
+  line-height: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--td-text-color-primary);
+  padding: 22px 0 0 20px;
+}
+</style>

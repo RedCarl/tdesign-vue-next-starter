@@ -11,6 +11,7 @@ export const usePermissionStore = defineStore('permission', {
   state: () => ({
     whiteListRouters: ['/login'],
     routers: [],
+    menus: [],
     removeRoutes: [],
     asyncRoutes: [],
   }),
@@ -30,8 +31,13 @@ export const usePermissionStore = defineStore('permission', {
           asyncRoutes = [];
         }
 
-        this.asyncRoutes = transformObjectToRoute(asyncRoutes);
+        let data = transformObjectToRoute(asyncRoutes);
+
+        this.asyncRoutes = data.routes;
+        this.menus = data.menus;
+
         await this.initRoutes();
+
         return this.asyncRoutes;
       } catch (error) {
         throw new Error('动态路由加载失败');

@@ -1,5 +1,5 @@
 import uniq from 'lodash/uniq';
-import { createRouter, createWebHistory, RouteRecordRaw, useRoute } from 'vue-router';
+import {createRouter, createWebHistory, RouteRecordRaw, useRoute, useRouter} from 'vue-router';
 
 const env = import.meta.env.MODE || 'development';
 
@@ -18,7 +18,7 @@ const defaultRouterList: Array<RouteRecordRaw> = [
   },
   {
     path: '/',
-    redirect: '/dashboard/base',
+    redirect: '/dashboard',
   },
 ];
 // 存放固定路由

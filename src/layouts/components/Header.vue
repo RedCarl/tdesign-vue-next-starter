@@ -9,7 +9,6 @@
           <t-button theme="default" shape="square" variant="text" @click="changeCollapsed">
             <t-icon class="collapsed-icon" name="view-list" />
           </t-button>
-          <search :layout="layout" />
         </div>
       </template>
       <template v-if="layout !== 'side'" #default>
@@ -17,22 +16,7 @@
       </template>
       <template #operations>
         <div class="operations-container">
-          <!-- 搜索框 -->
-          <search v-if="layout !== 'side'" :layout="layout" />
 
-          <!-- 全局通知 -->
-          <notice />
-
-          <t-tooltip placement="bottom" :content="$t('layout.header.code')">
-            <t-button theme="default" shape="square" variant="text" @click="navToGitHub">
-              <t-icon name="logo-github" />
-            </t-button>
-          </t-tooltip>
-          <t-tooltip placement="bottom" :content="$t('layout.header.help')">
-            <t-button theme="default" shape="square" variant="text" @click="navToHelper">
-              <t-icon name="help-circle" />
-            </t-button>
-          </t-tooltip>
           <t-dropdown trigger="click">
             <t-button theme="default" shape="square" variant="text">
               <translate-icon />
@@ -66,11 +50,6 @@
               <template #suffix><chevron-down-icon /></template>
             </t-button>
           </t-dropdown>
-          <t-tooltip placement="bottom" :content="$t('layout.header.setting')">
-            <t-button theme="default" shape="square" variant="text" @click="toggleSettingPanel">
-              <setting-icon />
-            </t-button>
-          </t-tooltip>
         </div>
       </template>
     </t-head-menu>
@@ -78,22 +57,21 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDownIcon, PoweroffIcon, SettingIcon, TranslateIcon, UserCircleIcon } from 'tdesign-icons-vue-next';
+import { ChevronDownIcon, PoweroffIcon, TranslateIcon, UserCircleIcon } from 'tdesign-icons-vue-next';
 import type { PropType } from 'vue';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import LogoFull from '@/assets/assets-logo-full.svg?component';
 import { prefix } from '@/config/global';
-import { langList } from '@/locales/index';
+import { langList } from '@/locales';
 import { useLocale } from '@/locales/useLocale';
 import { getActive } from '@/router';
 import { useSettingStore, useUserStore } from '@/store';
-import type { MenuRoute, ModeType } from '@/types/interface';
+import type { ModeType } from '@/types/interface';
 
 import MenuContent from './MenuContent.vue';
-import Notice from './Notice.vue';
-import Search from './Search.vue';
+import {RouteItem} from "@/api/model/permissionModel";
 
 const props = defineProps({
   theme: {
@@ -109,7 +87,7 @@ const props = defineProps({
     default: true,
   },
   menu: {
-    type: Array as PropType<MenuRoute[]>,
+    type: Array as PropType<RouteItem[]>,
     default: () => [],
   },
   isFixed: {
@@ -129,12 +107,6 @@ const props = defineProps({
 const router = useRouter();
 const settingStore = useSettingStore();
 const user = useUserStore();
-
-const toggleSettingPanel = () => {
-  settingStore.updateConfig({
-    showSettingPanel: true,
-  });
-};
 
 const active = computed(() => getActive());
 
@@ -176,13 +148,6 @@ const handleLogout = () => {
   });
 };
 
-const navToGitHub = () => {
-  window.open('https://github.com/tencent/tdesign-vue-next-starter');
-};
-
-const navToHelper = () => {
-  window.open('http://tdesign.tencent.com/starter/docs/get-started');
-};
 </script>
 <style lang="less" scoped>
 .@{starter-prefix}-header {

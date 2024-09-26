@@ -1,8 +1,6 @@
-import cloneDeep from 'lodash/cloneDeep';
 import { shallowRef } from 'vue';
 
-import { RouteItem } from '@/api/model/permissionModel';
-import { RouteMeta } from '@/types/interface';
+import {MenuItem, RouteItem} from '@/api/model/permissionModel';
 import {
   BLANK_LAYOUT,
   EXCEPTION_COMPONENT,
@@ -33,13 +31,12 @@ async function getMenuIcon(iconName: string): Promise<string> {
 }
 
 // 动态引入路由组件
-function asyncImportRoute(routes: RouteItem[] | undefined) {
+function asyncImportRoute(routes: MenuItem[] | undefined) {
   dynamicViewsModules = dynamicViewsModules || import.meta.glob('../../pages/**/*.vue');
   if (!routes) return;
 
   routes.forEach(async (item) => {
     const { component, name } = item;
-    const { children } = item;
 
     if (component) {
       const layoutFound = LayoutMap.get(component.toUpperCase());
@@ -52,10 +49,7 @@ function asyncImportRoute(routes: RouteItem[] | undefined) {
       item.component = PARENT_LAYOUT();
     }
 
-    if (item.meta.icon) item.meta.icon = await getMenuIcon(item.meta.icon);
-
-    // eslint-disable-next-line no-unused-expressions
-    children && asyncImportRoute(children);
+    if (item.icon) item.icon = await getMenuIcon(item.icon);
   });
 }
 
@@ -84,27 +78,38 @@ function dynamicImport(dynamicViewsModules: Record<string, () => Promise<Recorda
 }
 
 // 将背景对象变成路由对象
-export function transformObjectToRoute<T = RouteItem>(routeList: RouteItem[]): T[] {
+export function transformObjectToRoute(routeList: RouteItem[]) {
   routeList.forEach(async (route) => {
-    const component = route.component as string;
+    for (const menu of route.menu) {
+      const component = menu.component as string;
 
-    if (component) {
-      if (component.toUpperCase() === 'LAYOUT') {
-        route.component = LayoutMap.get(component.toUpperCase());
+      if (component) {
+        if (component.toUpperCase() === 'LAYOUT') {
+          menu.component = LayoutMap.get(component.toUpperCase());
+        }
       } else {
-        route.children = [cloneDeep(route)];
-        route.component = LAYOUT;
-        route.name = `${route.name}Parent`;
-        route.path = '';
-        route.meta = (route.meta || {}) as RouteMeta;
+        throw new Error('component is undefined');
       }
-    } else {
-      throw new Error('component is undefined');
+      route.menu && asyncImportRoute(route.menu);
+      if (menu.icon) menu.icon = await getMenuIcon(menu.icon);
     }
-    // eslint-disable-next-line no-unused-expressions
-    route.children && asyncImportRoute(route.children);
-    if (route.meta.icon) route.meta.icon = await getMenuIcon(route.meta.icon);
   });
 
-  return [PAGE_NOT_FOUND_ROUTE, ...routeList] as unknown as T[];
+  let routes = [
+    {
+      "path": "/layout",
+      "name": "layout",
+      "component": () => import('@/layouts/index.vue'),
+      "children": [] as MenuItem[]
+    }
+  ];
+
+  for (const route of routeList) {
+    routes[0].children.push(...route.menu);
+  }
+
+  return {
+    routes: [PAGE_NOT_FOUND_ROUTE, ...routes],
+    menus: routeList
+  };
 }
