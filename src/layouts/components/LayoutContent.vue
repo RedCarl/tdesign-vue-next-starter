@@ -61,12 +61,8 @@
       </t-tab-panel>
     </t-tabs>
     <t-content :class="`${prefix}-content-layout`">
-      <l-breadcrumb v-if="settingStore.showBreadcrumb" />
       <l-content />
     </t-content>
-    <t-footer v-if="settingStore.showFooter" :class="`${prefix}-footer-layout`">
-      <l-footer />
-    </t-footer>
   </t-layout>
 </template>
 
@@ -80,9 +76,7 @@ import { useLocale } from '@/locales/useLocale';
 import { useSettingStore, useTabsRouterStore } from '@/store';
 import type { TRouterInfo, TTabRemoveOptions } from '@/types/interface';
 
-import LBreadcrumb from './Breadcrumb.vue';
 import LContent from './Content.vue';
-import LFooter from './Footer.vue';
 
 const route = useRoute();
 const router = useRouter();

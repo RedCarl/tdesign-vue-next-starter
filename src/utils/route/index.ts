@@ -4,7 +4,6 @@ import {MenuItem, RouteItem} from '@/api/model/permissionModel';
 import {
   BLANK_LAYOUT,
   EXCEPTION_COMPONENT,
-  IFRAME,
   LAYOUT,
   PAGE_NOT_FOUND_ROUTE,
   PARENT_LAYOUT,
@@ -17,7 +16,6 @@ const LayoutMap = new Map<string, () => Promise<typeof import('*.vue')>>();
 
 LayoutMap.set('LAYOUT', LAYOUT);
 LayoutMap.set('BLANK', BLANK_LAYOUT);
-LayoutMap.set('IFRAME', IFRAME);
 
 let dynamicViewsModules: Record<string, () => Promise<Recordable>>;
 

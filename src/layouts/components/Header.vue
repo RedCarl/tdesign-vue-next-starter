@@ -11,9 +11,6 @@
           </t-button>
         </div>
       </template>
-      <template v-if="layout !== 'side'" #default>
-        <menu-content class="header-menu" :nav-data="menu" />
-      </template>
       <template #operations>
         <div class="operations-container">
 
