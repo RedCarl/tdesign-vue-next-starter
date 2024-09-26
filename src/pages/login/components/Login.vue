@@ -1,89 +1,63 @@
 <template>
-  <t-form
-    ref="form"
-    :class="['item-container', `login-${type}`]"
-    :data="formData"
-    :rules="FORM_RULES"
-    label-width="0"
-    @submit="onSubmit"
-  >
-    <template v-if="type == 'password'">
-      <t-form-item name="username">
-        <t-input v-model="formData.username" size="large" :placeholder="`${$t('pages.login.input.username')}：admin`">
-          <template #prefix-icon>
-            <t-icon name="user" />
-          </template>
-        </t-input>
-      </t-form-item>
+  <main class="flex-grow flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+      <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200">
+        <div class="text-center mb-8">
+          <h1 class="text-2xl font-bold text-gray-800">登录您的帐户</h1>
+          <p class="text-gray-600 mt-2">欢迎回来，请输入您的登录信息。</p>
+        </div>
 
-      <t-form-item name="password">
-        <t-input
-          v-model="formData.password"
-          size="large"
-          :type="showPsw ? 'text' : 'password'"
-          clearable
-          :placeholder="`${$t('pages.login.input.password')}：admin`"
+        <t-form
+            ref="form"
+            label-width="0"
+            :colon="true"
+            :data="formData"
+            :rules="FORM_RULES"
+            class="space-y-6"
+            @submit="onSubmit"
         >
-          <template #prefix-icon>
-            <t-icon name="lock-on" />
-          </template>
-          <template #suffix-icon>
-            <t-icon :name="showPsw ? 'browse' : 'browse-off'" @click="showPsw = !showPsw" />
-          </template>
-        </t-input>
-      </t-form-item>
+          <!--账号-->
+          <div class="space-y-4">
+            <div class="relative">
+              <t-form-item name="username">
+                <t-input v-model="formData.username" :disabled="loading" placeholder="请输入账号" >
+                  <template #prefix-icon>
+                    <UserIcon />
+                  </template>
+                </t-input>
+              </t-form-item>
+            </div>
+          </div>
 
-      <div class="check-container remember-pwd">
-        <t-checkbox>{{ $t('pages.login.remember') }}</t-checkbox>
-        <span class="tip">{{ $t('pages.login.forget') }}</span>
+          <!--密码-->
+          <div class="space-y-4">
+            <div class="relative">
+              <t-form-item name="password">
+                <t-input v-model="formData.password" :disabled="loading" type="password" placeholder="请输入密码" >
+                  <template #prefix-icon>
+                    <lock-on-icon />
+                  </template>
+                </t-input>
+              </t-form-item>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <t-checkbox :disabled="loading" />
+              <label for="remember" class="ml-2 block text-sm text-gray-600">记住密码</label>
+            </div>
+            <a href="#" class="text-sm text-blue-600 hover:underline">忘记密码？</a>
+          </div>
+
+          <t-button theme="primary" type="submit" class="w-full" :loading="loading">登录</t-button>
+        </t-form>
       </div>
-    </template>
-
-    <!-- 扫码登录 -->
-    <template v-else-if="type == 'qrcode'">
-      <div class="tip-container">
-        <span class="tip">{{ $t('pages.login.wechatLogin') }}</span>
-        <span class="refresh">{{ $t('pages.login.refresh') }} <t-icon name="refresh" /> </span>
-      </div>
-      <qrcode-vue value="" :size="160" level="H" />
-    </template>
-
-    <!-- 手机号登录 -->
-    <template v-else>
-      <t-form-item name="phone">
-        <t-input v-model="formData.phone" size="large" :placeholder="$t('pages.login.input.phone')">
-          <template #prefix-icon>
-            <t-icon name="mobile" />
-          </template>
-        </t-input>
-      </t-form-item>
-
-      <t-form-item class="verification-code" name="verifyCode">
-        <t-input v-model="formData.verifyCode" size="large" :placeholder="$t('pages.login.input.verification')" />
-        <t-button size="large" variant="outline" :disabled="countDown > 0" @click="sendCode">
-          {{ countDown == 0 ? $t('pages.login.sendVerification') : `${countDown}秒后可重发` }}
-        </t-button>
-      </t-form-item>
-    </template>
-
-    <t-form-item v-if="type !== 'qrcode'" class="btn-container">
-      <t-button block size="large" type="submit"> {{ $t('pages.login.signIn') }} </t-button>
-    </t-form-item>
-
-    <div class="switch-container">
-      <span v-if="type !== 'password'" class="tip" @click="switchType('password')">{{
-        $t('pages.login.usernameLogin')
-      }}</span>
-      <span v-if="type !== 'qrcode'" class="tip" @click="switchType('qrcode')">{{
-        $t('pages.login.wechatLogin')
-      }}</span>
-      <span v-if="type !== 'phone'" class="tip" @click="switchType('phone')">{{ $t('pages.login.phoneLogin') }}</span>
     </div>
-  </t-form>
+  </main>
 </template>
 
 <script setup lang="ts">
-import QrcodeVue from 'qrcode.vue';
 import type { FormInstanceFunctions, FormRule, SubmitContext } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { ref } from 'vue';
@@ -91,6 +65,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { t } from '@/locales';
 import { useUserStore } from '@/store';
+import {LockOnIcon, UserIcon} from "tdesign-icons-vue-next";
 
 const userStore = useUserStore();
 
@@ -104,20 +79,15 @@ const FORM_RULES: Record<string, FormRule[]> = {
   password: [{ required: true, message: t('pages.login.required.password'), type: 'error' }],
 };
 
-const type = ref('password');
-
+const loading = ref(false);
 const form = ref<FormInstanceFunctions>();
 const formData = ref({ ...INITIAL_DATA });
-const showPsw = ref(false);
 
 const router = useRouter();
 const route = useRoute();
 
-const switchType = (val: string) => {
-  type.value = val;
-};
-
 const onSubmit = async (ctx: SubmitContext) => {
+  loading.value = true;
   if (ctx.validateResult === true) {
     try {
       await userStore.login(formData.value);
@@ -129,11 +99,12 @@ const onSubmit = async (ctx: SubmitContext) => {
     } catch (e) {
       console.log(e);
       await MessagePlugin.error(e.message);
+    } finally {
+      loading.value = false;
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-@import '../index.less';
 </style>
