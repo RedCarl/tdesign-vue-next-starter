@@ -2,12 +2,9 @@
   <div :class="layoutCls">
     <t-head-menu :class="menuCls" :theme="menuTheme" expand-type="popup" :value="active">
       <template #logo>
-        <span v-if="showLogo" class="header-logo-container" @click="handleNav('/dashboard/base')">
-          <logo-full class="t-logo" />
-        </span>
-        <div v-else class="header-operate-left">
+        <div class="header-operate-left">
           <t-button theme="default" shape="square" variant="text" @click="changeCollapsed">
-            <t-icon class="collapsed-icon" name="view-list" />
+            <t-icon class="collapsed-icon" :name="collapsed?'menu-fold':'menu-unfold'" />
           </t-button>
         </div>
       </template>
@@ -55,11 +52,10 @@
 
 <script setup lang="ts">
 import { ChevronDownIcon, PoweroffIcon, TranslateIcon, UserCircleIcon } from 'tdesign-icons-vue-next';
-import type { PropType } from 'vue';
+import {PropType, ref} from 'vue';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
-import LogoFull from '@/assets/assets-logo-full.svg?component';
 import { prefix } from '@/config/global';
 import { langList } from '@/locales';
 import { useLocale } from '@/locales/useLocale';
@@ -67,7 +63,6 @@ import { getActive } from '@/router';
 import { useSettingStore, useUserStore } from '@/store';
 import type { ModeType } from '@/types/interface';
 
-import MenuContent from './MenuContent.vue';
 import {RouteItem} from "@/api/model/permissionModel";
 
 const props = defineProps({
@@ -78,10 +73,6 @@ const props = defineProps({
   layout: {
     type: String,
     default: 'top',
-  },
-  showLogo: {
-    type: Boolean,
-    default: true,
   },
   menu: {
     type: Array as PropType<RouteItem[]>,
@@ -104,6 +95,7 @@ const props = defineProps({
 const router = useRouter();
 const settingStore = useSettingStore();
 const user = useUserStore();
+const collapsed = ref(false);
 
 const active = computed(() => getActive());
 
@@ -132,6 +124,7 @@ const changeCollapsed = () => {
   settingStore.updateConfig({
     isSidebarCompact: !settingStore.isSidebarCompact,
   });
+  collapsed.value = !collapsed.value;
 };
 
 const handleNav = (url: string) => {
