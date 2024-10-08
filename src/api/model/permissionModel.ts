@@ -14,6 +14,6 @@ export interface MenuItem {
   name: string;
   icon: string;
   path: string;
-  hide: boolean;
+  hidden: boolean;
   component: string | Component;
 }

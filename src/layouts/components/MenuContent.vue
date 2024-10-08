@@ -2,7 +2,7 @@
   <t-menu-group v-for="menu in list" :title="menu.title" >
     <template v-for="item in menu.menu">
       <t-menu-item
-          v-if="!item.hide"
+          v-if="!item.hidden"
           :name="item.path"
           :value="getPath(item)"
           :to="item.path"

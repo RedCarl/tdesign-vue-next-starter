@@ -1,6 +1,6 @@
 import { shallowRef } from 'vue';
 
-import {MenuItem, RouteItem} from '@/api/model/permissionModel';
+import {Component, MenuItem, RouteItem} from '@/api/model/permissionModel';
 import {
   BLANK_LAYOUT,
   EXCEPTION_COMPONENT,
@@ -8,6 +8,7 @@ import {
   PAGE_NOT_FOUND_ROUTE,
   PARENT_LAYOUT,
 } from '@/utils/route/constant';
+import component from "*.vue";
 
 // vite 3+ support dynamic import from node_modules
 const iconsPath = import.meta.glob('../../../node_modules/tdesign-icons-vue-next/esm/components/*.js');
@@ -79,17 +80,20 @@ function dynamicImport(dynamicViewsModules: Record<string, () => Promise<Recorda
 export function transformObjectToRoute(routeList: RouteItem[]) {
   routeList.forEach(async (route) => {
     for (const menu of route.menu) {
-      const component = menu.component as string;
+      if (typeof menu.component === 'string') {
+        const component = menu.component as string;
 
-      if (component) {
-        if (component.toUpperCase() === 'LAYOUT') {
-          menu.component = LayoutMap.get(component.toUpperCase());
+        if (component) {
+          if (component.toUpperCase() === 'LAYOUT') {
+            menu.component = LayoutMap.get(component.toUpperCase());
+          }
+        } else {
+          throw new Error('component is undefined');
         }
-      } else {
-        throw new Error('component is undefined');
+        route.menu && asyncImportRoute(route.menu);
+        if (menu.icon) menu.icon = await getMenuIcon(menu.icon);
+
       }
-      route.menu && asyncImportRoute(route.menu);
-      if (menu.icon) menu.icon = await getMenuIcon(menu.icon);
     }
   });
 

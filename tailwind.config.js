@@ -1,8 +1,10 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ["./src/**/*.{html,vue,ts,js}"],
+export default {
+  //配置tailwind的应用范围
+  //在这里我们配置了tailwind应用到index.html文件和src目录下所有.vue和.js文件
+  content: ["./index.html", "./src/**/*.{vue,js,ts}"],
   theme: {
     extend: {},
   },
   plugins: [],
-}
+};

@@ -1,5 +1,11 @@
 import { request } from '@/utils/request';
 
+export function menuGroup() {
+  return request.get({
+    url: '/menu/group'
+  });
+}
+
 export function menuQuery(params: any) {
   return request.get({
     url: '/menu/query',

@@ -1,14 +1,14 @@
 <template>
   <div class="container">
     <t-form
-      ref="form"
-      class="base-form"
-      :data="formData"
-      :rules="FORM_RULES"
-      label-align="top"
-      :label-width="100"
-      @submit="replace"
-      @reset="cancel"
+        ref="form"
+        class="base-form"
+        :data="formData"
+        :rules="FORM_RULES"
+        label-align="top"
+        :label-width="100"
+        @submit="replace"
+        @reset="cancel"
     >
       <div class="form-basic-container">
         <div class="form-basic-item">
@@ -16,8 +16,41 @@
 
           <t-row :gutter="[32, 24]">
             <t-col :span="6">
+              <t-form-item label="菜单分组" name="title">
+                <t-input v-model="formData.title" :style="{ width: '322px' }" placeholder="请输入菜单分组" />
+              </t-form-item>
+            </t-col>
+
+            <t-col :span="6"></t-col>
+
+            <t-col :span="6">
               <t-form-item label="菜单名称" name="name">
                 <t-input v-model="formData.name" :style="{ width: '322px' }" placeholder="请输入菜单名称" />
+              </t-form-item>
+            </t-col>
+
+            <t-col :span="6">
+              <t-form-item label="菜单图标" name="icon">
+                <t-select
+                    v-model="formData.icon"
+                    placeholder="请选择菜单图标"
+                    :style="{ width: '322px' }"
+                    :popup-props="{ overlayInnerStyle: { width: '322px' } }"
+                >
+                  <t-option
+                      v-for="item in options"
+                      :key="item.stem"
+                      :value="item.stem"
+                      class="inline-block text-[20px]"
+                  >
+                    <div>
+                      <t-icon :name="item.stem" />
+                    </div>
+                  </t-option>
+                  <template #valueDisplay>
+                    <t-icon :name="formData.icon" :style="{ marginRight: '8px' }" />{{ formData.icon }}
+                  </template>
+                </t-select>
               </t-form-item>
             </t-col>
 
@@ -34,59 +67,14 @@
             </t-col>
 
             <t-col :span="6">
-              <t-form-item label="默认路径" name="redirect">
-                <t-input v-model="formData.redirect" :style="{ width: '322px' }" placeholder="请输入默认路径" />
+              <t-form-item label="权重顺序" name="sort">
+                <t-input-number v-model="formData.sort" placeholder="请输入权重顺序" />
               </t-form-item>
             </t-col>
-          </t-row>
-          <t-divider />
-          <t-row :gutter="[32, 24]">
-            <t-col :span="6">
-              <t-form-item label="菜单标题">
-                <t-input v-model="formData.meta.title" :style="{ width: '322px' }" placeholder="请输入菜单标题" />
-              </t-form-item>
-            </t-col>
-
-            <t-col :span="6">
-              <t-form-item label="菜单图标" name="icon">
-                <t-input
-                  v-model="formData.meta.icon"
-                  :style="{ width: '322px', marginRight: '10px' }"
-                  placeholder="请输入菜单图标"
-                />
-                <t-icon :name="formData.meta.icon" size="2em" />
-              </t-form-item>
-            </t-col>
-
-            <t-col :span="6">
-              <t-form-item label="权重顺序" name="orderNo">
-                <t-input-number v-model="formData.meta.orderNo" placeholder="请输入权重顺序" />
-              </t-form-item>
-            </t-col>
-
-            <t-col :span="6"></t-col>
 
             <t-col :span="6">
               <t-form-item label="隐藏菜单" name="hidden">
-                <t-switch v-model="formData.meta.hidden" />
-              </t-form-item>
-            </t-col>
-
-            <t-col :span="6">
-              <t-form-item label="分组标签" name="group">
-                <t-switch v-model="formData.meta.group" />
-              </t-form-item>
-            </t-col>
-
-            <t-col :span="6">
-              <t-form-item label="服务编号" name="service">
-                <t-input v-model="formData.service" :style="{ width: '322px' }" placeholder="请输入服务编号" />
-              </t-form-item>
-            </t-col>
-
-            <t-col :span="6">
-              <t-form-item label="权限节点" name="permission">
-                <t-input v-model="formData.permission" :style="{ width: '322px' }" placeholder="请输入权限节点" />
+                <t-switch v-model="formData.hidden" />
               </t-form-item>
             </t-col>
           </t-row>
@@ -106,11 +94,15 @@
 </template>
 
 <script setup lang="ts">
+import { manifest } from 'tdesign-icons-vue-next';
 import { FormRule, MessagePlugin, SubmitContext } from 'tdesign-vue-next';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { menuQuery, menuReplace } from '@/api/menu';
+import {menuGroup, menuQuery, menuReplace} from '@/api/menu';
+
+// 获取全部图标的列表
+const options = ref(manifest);
 
 const router = useRouter();
 const route = useRoute();
@@ -119,28 +111,13 @@ const route = useRoute();
 const formModel = () => {
   return {
     id: route.query.id,
-    parentId: route.query.parentId,
+    title: '',
     name: '',
+    icon: 'add',
     path: '',
-    component: 'LAYOUT',
-    redirect: '',
-    meta: {
-      title: '',
-      icon: '',
-      expanded: false,
-      orderNo: 0,
-      hidden: false,
-      hiddenBreadcrumb: false,
-      single: false,
-      frameSrc: false,
-      frameBlank: false,
-      keepAlive: true,
-      group: false,
-    },
-    status: 0,
-    type: 0,
-    service: '',
-    permission: '',
+    hidden: false,
+    component: '',
+    sort: 0,
   };
 };
 
@@ -153,6 +130,7 @@ const FORM_RULES: Record<string, FormRule[]> = {
 
 /* 表单数据 */
 const formData = ref(formModel());
+const groupData = ref();
 
 /* 数据加载状态 */
 const dataLoading = ref(false);
@@ -177,7 +155,7 @@ const replace = async (ctx: SubmitContext) => {
 
 /* 取消操作 */
 const cancel = () => {
-  router.push('/system-menu/base');
+  router.push('/menu');
 };
 
 /* 编辑模式下数据查询 */
@@ -191,6 +169,16 @@ const queryData = async (id: string) => {
   }
 };
 
+/* 查询现有菜单组别 */
+const queryGroup = async () => {
+  try {
+    groupData.value = await menuGroup();
+  } catch (e) {
+    await MessagePlugin.error(e.message);
+  }
+};
+
+queryGroup();
 queryData(route.query.id as string);
 </script>
 

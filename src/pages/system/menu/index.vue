@@ -3,25 +3,25 @@
     <t-card class="list-card-container" :bordered="false">
       <t-row justify="space-between">
         <div class="left-operation-container">
-          <t-button @click="$router.push('/system-menu/replace')">新增菜单</t-button>
+          <t-button @click="$router.push('/menu/replace')">新增菜单</t-button>
         </div>
       </t-row>
       <t-enhanced-table
-        row-key="id"
-        :data="renderData"
-        :tree="{
+          row-key="id"
+          :data="renderData"
+          :tree="{
           childrenKey: 'children',
           treeNodeColumnIndex: 1,
           expandTreeNodeOnClick: true,
         }"
-        :columns="COLUMNS"
-        :stripe="true"
-        :pagination="pagination"
-        :loading="dataLoading"
-        @page-change="onPageChange"
+          :columns="COLUMNS"
+          :stripe="true"
+          :pagination="pagination"
+          :loading="dataLoading"
+          @page-change="onPageChange"
       >
         <template #icon="{ row }">
-          <icon :name="row.meta.icon" size="20" />
+          <icon :name="row.icon" size="20" />
         </template>
 
         <template #roles="{ row }">
@@ -33,24 +33,21 @@
         <template #operate="{ row }">
           <t-space>
             <t-link
-              v-if="row.parentId === '0'"
-              theme="primary"
-              @click="$router.push('/system-menu/replace?parentId=' + row.id)"
+                v-if="row.parentId === '0'"
+                theme="primary"
+                @click="$router.push('/menu/replace?parentId=' + row.id)"
             >
               子菜单
             </t-link>
-            <t-link
-              theme="primary"
-              @click="$router.push('/system-menu/replace?id=' + row.id + '&parentId=' + row.parentId)"
-            >
+            <t-link theme="primary" @click="$router.push('/menu/replace?id=' + row.id + '&parentId=' + row.parentId)">
               编辑
             </t-link>
 
             <t-popconfirm
-              v-if="renderData.length !== 1"
-              theme="default"
-              content="是否删除该账号？"
-              @confirm="deleteData(row.id)"
+                v-if="renderData.length !== 1"
+                theme="default"
+                content="是否删除该账号？"
+                @confirm="deleteData(row.id)"
             >
               <t-link theme="danger"> 删除 </t-link>
             </t-popconfirm>
@@ -79,7 +76,7 @@ const COLUMNS: PrimaryTableCol[] = [
   {
     title: '菜单名称',
     width: 100,
-    colKey: 'meta.title',
+    colKey: 'name',
   },
   {
     title: '菜单路径',
@@ -122,15 +119,15 @@ const dataLoading = ref(false);
 const fetchData = async (params: any) => {
   dataLoading.value = true;
   try {
-    // const data = await menuPage(params);
-    //
-    // renderData.value = data.records;
-    // pagination.value = {
-    //   ...pagination.value,
-    //   total: data.totalRow,
-    //   current: data.pageNumber,
-    //   pageSize: data.pageSize,
-    // };
+    const data = await menuPage(params);
+
+    renderData.value = data.records;
+    pagination.value = {
+      ...pagination.value,
+      total: data.totalRow,
+      current: data.pageNumber,
+      pageSize: data.pageSize,
+    };
   } catch (e) {
     await MessagePlugin.error(e.message);
   } finally {
