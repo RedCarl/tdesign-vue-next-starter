@@ -1,7 +1,13 @@
 <template>
   <div>
     <div class="tdesign-demo-image-viewer__base">
-      <t-image-viewer :images="[images]">
+      <div
+          v-if="!images"
+          class="tdesign-demo-image-viewer__error tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base"
+      >
+        <div class="tdesign-demo-image-viewer__error--content">暂无图片</div>
+      </div>
+      <t-image-viewer v-else :images="[images]">
         <template #trigger="{ open }">
           <div class="tdesign-demo-image-viewer__ui-image">
             <img alt="test" :src="images" class="tdesign-demo-image-viewer__ui-image--img" />
