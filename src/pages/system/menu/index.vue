@@ -9,11 +9,6 @@
       <t-enhanced-table
           row-key="id"
           :data="renderData"
-          :tree="{
-          childrenKey: 'children',
-          treeNodeColumnIndex: 1,
-          expandTreeNodeOnClick: true,
-        }"
           :columns="COLUMNS"
           :stripe="true"
           :pagination="pagination"
@@ -22,12 +17,6 @@
       >
         <template #icon="{ row }">
           <icon :name="row.icon" size="20" />
-        </template>
-
-        <template #roles="{ row }">
-          <t-tag v-for="(item, index) in row.roles" :key="index" theme="primary">
-            {{ item }}
-          </t-tag>
         </template>
 
         <template #operate="{ row }">
@@ -75,6 +64,7 @@ const COLUMNS: PrimaryTableCol[] = [
   },
   {
     title: '菜单名称',
+    align: 'center',
     width: 100,
     colKey: 'name',
   },
@@ -85,9 +75,15 @@ const COLUMNS: PrimaryTableCol[] = [
     colKey: 'path',
   },
   {
+    title: '顺序',
+    align: 'center',
+    width: 100,
+    colKey: 'sort',
+  },
+  {
     title: '操作',
     align: 'center',
-    width: '100px',
+    width: 100,
     colKey: 'operate',
   },
 ];

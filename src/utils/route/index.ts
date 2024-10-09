@@ -1,6 +1,6 @@
 import { shallowRef } from 'vue';
 
-import {Component, MenuItem, RouteItem} from '@/api/model/permissionModel';
+import {MenuItem, RouteItem} from '@/api/model/permissionModel';
 import {
   BLANK_LAYOUT,
   EXCEPTION_COMPONENT,
@@ -8,7 +8,6 @@ import {
   PAGE_NOT_FOUND_ROUTE,
   PARENT_LAYOUT,
 } from '@/utils/route/constant';
-import component from "*.vue";
 
 // vite 3+ support dynamic import from node_modules
 const iconsPath = import.meta.glob('../../../node_modules/tdesign-icons-vue-next/esm/components/*.js');
