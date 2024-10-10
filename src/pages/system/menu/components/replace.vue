@@ -17,7 +17,16 @@
           <t-row :gutter="[32, 24]">
             <t-col :span="6">
               <t-form-item label="菜单分组" name="title">
-                <t-input v-model="formData.title" :style="{ width: '322px' }" placeholder="请输入菜单分组" />
+                <t-select
+                    v-model="formData.title"
+                    :creatable="true"
+                    :filterable="true"
+                    :options="groupData"
+                    :keys="{ label: 'title', value: 'title' }"
+                    placeholder="请输入菜单分组"
+                    :style="{ width: '322px' }"
+                    :popup-props="{ overlayInnerStyle: { width: '322px' } }"
+                />
               </t-form-item>
             </t-col>
 
@@ -99,7 +108,7 @@ import { FormRule, MessagePlugin, SubmitContext } from 'tdesign-vue-next';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import {menuGroup, menuQuery, menuReplace} from '@/api/menu';
+import { menuGroup, menuQuery, menuReplace } from '@/api/menu';
 
 // 获取全部图标的列表
 const options = ref(manifest);
@@ -113,7 +122,7 @@ const formModel = () => {
     id: route.query.id,
     title: '',
     name: '',
-    icon: 'add',
+    icon: '',
     path: '',
     hidden: false,
     component: '',
@@ -123,9 +132,10 @@ const formModel = () => {
 
 /* 表单规则 */
 const FORM_RULES: Record<string, FormRule[]> = {
-  // name: [{ required: true, message: '请输入菜单名称', type: 'error' }],
-  // path: [{ required: true, message: '请输入菜单路径', type: 'error' }],
-  // component: [{ required: true, message: '请输入菜单组件路径', type: 'error' }],
+  title: [{ required: true, message: '请输入分组名称', type: 'error' }],
+  name: [{ required: true, message: '请输入名称', type: 'error' }],
+  path: [{ required: true, message: '请输入路由路径', type: 'error' }],
+  component: [{ required: true, message: '请输入组件路径', type: 'error' }],
 };
 
 /* 表单数据 */
