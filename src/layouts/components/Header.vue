@@ -4,7 +4,8 @@
       <template #logo>
         <div class="header-operate-left">
           <t-button theme="default" shape="square" variant="text" @click="changeCollapsed">
-            <t-icon class="collapsed-icon" :name="collapsed?'menu-fold':'menu-unfold'" />
+<!--            <t-icon class="collapsed-icon" :name="collapsed?'menu-fold':'menu-unfold'" />-->
+            <div class="collapsed-icon" :class="isCompact?'menu-fold':'menu-unfold'" ></div>
           </t-button>
         </div>
       </template>
@@ -95,7 +96,6 @@ const props = defineProps({
 const router = useRouter();
 const settingStore = useSettingStore();
 const user = useUserStore();
-const collapsed = ref(false);
 
 const active = computed(() => getActive());
 
@@ -124,7 +124,6 @@ const changeCollapsed = () => {
   settingStore.updateConfig({
     isSidebarCompact: !settingStore.isSidebarCompact,
   });
-  collapsed.value = !collapsed.value;
 };
 
 const handleNav = (url: string) => {
@@ -170,7 +169,7 @@ const handleLogout = () => {
 }
 
 .header-menu {
-  flex: 1 1 1;
+  flex: 1;
   display: inline-flex;
 
   :deep(.t-menu__item) {
@@ -271,6 +270,18 @@ const handleLogout = () => {
       margin-bottom: 8px;
     }
   }
+}
+
+.menu-fold {
+  width: 21px;
+  height: 20px;
+  background-image: url("/src/assets/icon/trail_icon.svg");
+}
+
+.menu-unfold {
+  width: 21px;
+  height: 20px;
+  background-image: url("/src/assets/icon/trail_icon_close.svg");
 }
 </style>
 
