@@ -2,7 +2,7 @@ import { request } from '@/utils/request';
 
 export function menuGroup() {
   return request.get({
-    url: '/menu/group'
+    url: '/menu/group',
   });
 }
 
