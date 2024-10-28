@@ -51,11 +51,11 @@ const getMenuList = (list: RouteItem[]): RouteItem[] => {
     item.menu.sort((a, b) => a.sort - b.sort);
   });
 
-  // 根据每个 RouteItem 的 menu.sort 总和对最外层进行排序
+// 根据每个 RouteItem 的 menu.sort 最大值对最外层进行排序
   list.sort((a, b) => {
-    const sumA = a.menu.reduce((sum, menuItem) => sum + menuItem.sort, 0);
-    const sumB = b.menu.reduce((sum, menuItem) => sum + menuItem.sort, 0);
-    return sumA - sumB;
+    const maxA = Math.max(...a.menu.map(menuItem => menuItem.sort));
+    const maxB = Math.max(...b.menu.map(menuItem => menuItem.sort));
+    return maxA - maxB;
   });
 
   return list;
