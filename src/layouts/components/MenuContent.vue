@@ -82,4 +82,15 @@ const getPath = (item: MenuItem) => {
   color: var(--td-text-color-primary);
   padding: 22px 0 0 20px;
 }
+
+:deep(.t-is-active::before){
+  position: absolute;
+  border-radius: 4px;
+  left: 7px;
+  width: 4px;
+  height: 16px;
+  content: "";
+  background: var(--td-brand-color) !important;
+}
+
 </style>

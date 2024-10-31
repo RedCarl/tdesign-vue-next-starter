@@ -11,6 +11,7 @@ import 'tdesign-vue-next/es/style/index.css';
 import '@/style/index.less';
 import './permission';
 import "tailwindcss/tailwind.css";
+import "./style/tailwind.css";
 
 const app = createApp(App);
 

@@ -1,0 +1,17 @@
+.card-header{
+    position: relative;
+    font-size: 16px;
+    font-weight: 500;
+    margin-left: 18px;
+}
+
+.card-header::before {
+    position: absolute;
+    top: 4px;
+    left: -13px;
+    width: 4px;
+    height: 14px;
+    content: "";
+    background: var(--td-brand-color);
+    border-radius: 10px;
+}
