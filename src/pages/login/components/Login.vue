@@ -88,20 +88,20 @@ const route = useRoute();
 
 const onSubmit = async (ctx: SubmitContext) => {
   loading.value = true;
-  if (ctx.validateResult === true) {
-    try {
+
+  try {
+    if (ctx.validateResult === true) {
       await userStore.login(formData.value);
 
       await MessagePlugin.success('登录成功');
       const redirect = route.query.redirect as string;
       const redirectUrl = redirect ? decodeURIComponent(redirect) : '/dashboard';
       await router.push(redirectUrl);
-    } catch (e) {
-      console.log(e);
-      await MessagePlugin.error(e.message);
-    } finally {
-      loading.value = false;
     }
+  } catch (e) {
+    await MessagePlugin.error(e.message);
+  } finally {
+    loading.value = false;
   }
 };
 </script>
