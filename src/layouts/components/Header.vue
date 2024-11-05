@@ -30,10 +30,10 @@
             <template #dropdown>
               <t-dropdown-menu>
                 <t-dropdown-item class="operations-dropdown-container-item" @click="handleNav('/user/index')">
-                  <user-circle-icon />{{ $t('layout.header.user') }}
+                  <user-circle-icon />{{ t('layout.header.user') }}
                 </t-dropdown-item>
                 <t-dropdown-item class="operations-dropdown-container-item" @click="handleLogout">
-                  <poweroff-icon />{{ $t('layout.header.signOut') }}
+                  <poweroff-icon />{{ t('layout.header.signOut') }}
                 </t-dropdown-item>
               </t-dropdown-menu>
             </template>
@@ -169,7 +169,7 @@ const handleLogout = () => {
 }
 
 .header-menu {
-  flex: 1;
+  flex: 1 1 1;
   display: inline-flex;
 
   :deep(.t-menu__item) {
