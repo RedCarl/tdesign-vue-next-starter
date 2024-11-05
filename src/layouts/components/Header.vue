@@ -30,10 +30,10 @@
             <template #dropdown>
               <t-dropdown-menu>
                 <t-dropdown-item class="operations-dropdown-container-item" @click="handleNav('/user/index')">
-                  <user-circle-icon />{{ t('layout.header.user') }}
+                  <user-circle-icon />用户信息
                 </t-dropdown-item>
                 <t-dropdown-item class="operations-dropdown-container-item" @click="handleLogout">
-                  <poweroff-icon />{{ t('layout.header.signOut') }}
+                  <poweroff-icon />退出登录
                 </t-dropdown-item>
               </t-dropdown-menu>
             </template>
