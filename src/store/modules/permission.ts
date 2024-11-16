@@ -6,10 +6,11 @@ import { userMenu } from '@/api/user';
 import router, { fixedRouterList, homepageRouterList } from '@/router';
 import { store } from '@/store';
 import { transformObjectToRoute } from '@/utils/route';
+import { MessagePlugin } from "tdesign-vue-next";
 
 export const usePermissionStore = defineStore('permission', {
   state: () => ({
-    whiteListRouters: ['/login'],
+    whiteListRouters: ['/login','/register'],
     routers: [],
     menus: [],
     removeRoutes: [],
@@ -39,8 +40,8 @@ export const usePermissionStore = defineStore('permission', {
         await this.initRoutes();
 
         return this.asyncRoutes;
-      } catch (error) {
-        throw new Error('动态路由加载失败');
+      } catch (e) {
+        await MessagePlugin.error(e.message);
       }
     },
     async restoreRoutes() {
