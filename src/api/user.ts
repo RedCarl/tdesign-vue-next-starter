@@ -1,9 +1,8 @@
 import { request } from '@/utils/request';
 
 export function userLogin(params: any) {
-  return request.get({
-    url: '/user/login',
-    params,
+  return request.post({
+    url: `/user/login?${new URLSearchParams(params).toString()}`
   });
 }
 export function userLogout() {
