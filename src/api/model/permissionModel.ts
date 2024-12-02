@@ -12,6 +12,7 @@ export interface RouteItem {
 
 export interface MenuItem {
   name: string;
+  display: string;
   icon: string;
   path: string;
   hidden: boolean;

@@ -106,7 +106,11 @@ export function transformObjectToRoute(routeList: RouteItem[]) {
   ];
 
   for (const route of routeList) {
-    routes[0].children.push(...route.menu);
+    for (const menu of route.menu) {
+      menu.display = menu.name;
+      menu.name = route.title+"-"+menu.name
+      routes[0].children.push(menu);
+    }
   }
 
   return {

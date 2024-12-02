@@ -10,7 +10,7 @@
         <template #icon>
           <component :is="menuIcon(item)" class="t-icon"></component>
         </template>
-        {{ item.name }}
+        {{ item.display }}
       </t-menu-item>
     </template>
   </t-menu-group>
