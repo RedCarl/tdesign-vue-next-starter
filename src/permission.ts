@@ -38,9 +38,13 @@ router.beforeEach(async (to, from, next) => {
           // 动态添加路由后，此处应当重定向到fullPath，否则会加载404页面内容
           next({ path: to.fullPath, replace: true, query: to.query });
         } else {
-          const redirect = decodeURIComponent((from.query.redirect || to.path) as string);
-          next(to.path === redirect ? { ...to, replace: true } : { path: redirect, query: to.query });
-          return;
+          if (router.hasRoute(to.name)) {
+            const redirect = decodeURIComponent((from.query.redirect || to.path) as string);
+            next(to.path === redirect ? { ...to, replace: true } : { path: redirect, query: to.query });
+            return;
+          } else {
+            next(`/`);
+          }
         }
       }
       if (router.hasRoute(to.name)) {
